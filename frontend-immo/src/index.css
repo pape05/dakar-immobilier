@@ -1,0 +1,94 @@
+@import "tailwindcss";
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap');
+
+@theme {
+  /* Brand browns */
+  --color-brand: #3b2418;
+  --color-brand-light: #563522;
+
+  /* Gold accents */
+  --color-gold: #c79457;
+  --color-gold-light: #ddb276;
+
+  /* Warm neutrals */
+  --color-cream: #f3d2a7;
+  --color-sand: #f7f0e8;
+  --color-sand-mid: #efe3d6;
+  --color-sand-strong: #d4bda8;
+  --color-sand-border: #dfd1c2;
+  --color-sand-light: #eaded2;
+  --color-sand-card: #fbf8f4;
+
+  /* Muted tones */
+  --color-sienna: #9a6638;
+  --color-umber: #8a552f;
+
+  /* Typography */
+  --font-sans: 'Satoshi', system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@layer base {
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+
+  @keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+}
+
+@layer components {
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    background: linear-gradient(90deg, transparent 25%, rgba(199,148,87,0.08) 50%, transparent 75%);
+    background-size: 200% 100%;
+    animation: shimmer 3s linear infinite;
+  }
+
+  .animate-pulse-ring {
+    animation: pulse-ring 2s ease-out infinite;
+  }
+
+  .reveal-container .scroll-reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition:
+      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reveal-container.in-view .scroll-reveal {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
