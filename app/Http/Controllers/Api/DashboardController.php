@@ -10,8 +10,16 @@ use App\Models\Paiement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+/**
+ * Contrôleur du tableau de bord.
+ *
+ * Retourne les statistiques agrégées : nombre de bâtiments, appartements,
+ * taux d'occupation, revenus mensuels (6 derniers mois), paiements en attente,
+ * activité récente et échéances proches. Filtré par agence pour les agents.
+ */
 class DashboardController extends Controller
 {
+    /** Données complètes du tableau de bord. */
     public function index(Request $request)
     {
         $user = $request->user();

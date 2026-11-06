@@ -6,8 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Models\Agence;
 use Illuminate\Http\Request;
 
+/**
+ * Contrôleur CRUD des agences immobilières (administrateur uniquement).
+ */
 class AgenceController extends Controller
 {
+    /** Liste des agences avec le nombre de bâtiments et d'utilisateurs. */
     public function index()
     {
         $agences = Agence::withCount('batiments', 'users')->latest()->get();
@@ -48,6 +52,7 @@ class AgenceController extends Controller
         return response()->json($agence);
     }
 
+    /** Suppression — refuse si l'agence contient encore des bâtiments. */
     public function destroy(Agence $agence)
     {
         if ($agence->batiments()->exists()) {

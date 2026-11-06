@@ -8,8 +8,15 @@ use App\Models\Location;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Contrôleur CRUD des contrats de location.
+ *
+ * Gère le cycle de vie d'une location : création (vérifie que l'appartement est libre),
+ * mise à jour du statut, et libération automatique de l'appartement à la résiliation/suppression.
+ */
 class LocationController extends Controller
 {
+    /** Liste des locations avec appartement, bâtiment et locataire. */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -23,6 +30,11 @@ class LocationController extends Controller
         return response()->json($locations);
     }
 
+    /**
+     * Création d'une location.
+     * Vérifie que l'appartement est libre avant de l'affecter.
+     * Passe l'appartement en état "occupé" si le statut est actif.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -69,6 +81,7 @@ class LocationController extends Controller
         return response()->json($location);
     }
 
+    /** Mise à jour — gère le changement d'appartement et la libération si résiliation. */
     public function update(Request $request, Location $location)
     {
         $this->authorizeAgence($request, $location);
@@ -103,6 +116,7 @@ class LocationController extends Controller
         return response()->json($location);
     }
 
+    /** Suppression — libère l'appartement automatiquement. */
     public function destroy(Request $request, Location $location)
     {
         $this->authorizeAgence($request, $location);

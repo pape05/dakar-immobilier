@@ -9,8 +9,16 @@ use App\Models\Paiement;
 use App\Services\QuittanceService;
 use Illuminate\Http\Request;
 
+/**
+ * Contrôleur CRUD des paiements de loyer.
+ *
+ * Accessible aux administrateurs et agents.
+ * Lors de la création d'un paiement en attente, une notification est envoyée au locataire.
+ * Génère des quittances PDF via le QuittanceService (TCPDF).
+ */
 class PaiementController extends Controller
 {
+    /** Liste des paiements avec location, appartement et locataire. */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -24,6 +32,7 @@ class PaiementController extends Controller
         return response()->json($paiements);
     }
 
+    /** Enregistrement d'un paiement — notifie le locataire si statut en_attente. */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -91,6 +100,7 @@ class PaiementController extends Controller
         return response()->json(null, 204);
     }
 
+    /** Génère et retourne la quittance PDF d'un paiement. */
     public function generateQuittance(Request $request, Paiement $paiement, QuittanceService $quittanceService)
     {
         $this->authorizeAgence($request, $paiement);

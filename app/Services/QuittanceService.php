@@ -5,8 +5,20 @@ namespace App\Services;
 use App\Models\Paiement;
 use TCPDF;
 
+/**
+ * Service de génération de quittances de loyer en PDF.
+ *
+ * Utilise TCPDF pour produire un document A4 avec en-tête agence,
+ * informations locataire/bien, détails du paiement, montant et
+ * zones de signature bailleur/locataire.
+ */
 class QuittanceService
 {
+    /**
+     * Génère une quittance PDF pour un paiement donné.
+     *
+     * @return \Illuminate\Http\Response PDF inline
+     */
     public function genererQuittancePDF(Paiement $paiement)
     {
         $paiement->load('location.appartement.batiment.agence', 'location.locataire');

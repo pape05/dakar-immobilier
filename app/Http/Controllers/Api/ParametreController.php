@@ -6,8 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Models\Agence;
 use Illuminate\Http\Request;
 
+/**
+ * Contrôleur des paramètres utilisateur.
+ *
+ * Permet de consulter/modifier le profil, les informations de l'agence
+ * (admin uniquement) et le mot de passe.
+ */
 class ParametreController extends Controller
 {
+    /** Retourne le profil de l'utilisateur connecté et son agence. */
     public function profil(Request $request)
     {
         $user = $request->user()->load('agence');
@@ -38,6 +45,7 @@ class ParametreController extends Controller
         ]);
     }
 
+    /** Modification des informations de l'agence (administrateur uniquement). */
     public function updateAgence(Request $request)
     {
         $user = $request->user();

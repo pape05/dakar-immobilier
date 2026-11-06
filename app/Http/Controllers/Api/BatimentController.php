@@ -7,8 +7,15 @@ use App\Models\Batiment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Contrôleur CRUD des bâtiments.
+ *
+ * Accessible aux administrateurs et agents.
+ * Un agent ne voit et ne gère que les bâtiments de son agence (filtrage automatique).
+ */
 class BatimentController extends Controller
 {
+    /** Liste des bâtiments (filtrée par agence pour les agents). */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -22,6 +29,7 @@ class BatimentController extends Controller
         return response()->json($batiments);
     }
 
+    /** Création d'un bâtiment avec upload photo optionnel. */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -49,6 +57,7 @@ class BatimentController extends Controller
         return response()->json($batiment, 201);
     }
 
+    /** Détail d'un bâtiment avec ses appartements. */
     public function show(Request $request, Batiment $batiment)
     {
         $this->authorizeAgence($request, $batiment);
@@ -83,6 +92,7 @@ class BatimentController extends Controller
         return response()->json($batiment);
     }
 
+    /** Suppression — refuse si le bâtiment contient encore des appartements. */
     public function destroy(Request $request, Batiment $batiment)
     {
         $this->authorizeAgence($request, $batiment);
@@ -97,6 +107,7 @@ class BatimentController extends Controller
         return response()->json(null, 204);
     }
 
+    /** Vérifie qu'un agent n'accède qu'aux bâtiments de son agence. */
     private function authorizeAgence(Request $request, Batiment $batiment): void
     {
         $user = $request->user();

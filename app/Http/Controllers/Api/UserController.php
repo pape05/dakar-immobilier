@@ -7,14 +7,23 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+/**
+ * Contrôleur CRUD des utilisateurs.
+ *
+ * Réservé aux administrateurs. Gère la création de comptes avec
+ * must_change_password activé par défaut et la protection contre
+ * la suppression du dernier administrateur.
+ */
 class UserController extends Controller
 {
+    /** Liste de tous les utilisateurs avec leur agence. */
     public function index()
     {
         $users = User::with('agence')->latest()->get();
         return response()->json($users);
     }
 
+    /** Création d'un utilisateur — le flag must_change_password est activé. */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -63,6 +72,7 @@ class UserController extends Controller
         return response()->json($user);
     }
 
+    /** Suppression — interdit de se supprimer soi-même ou le dernier admin. */
     public function destroy(Request $request, User $user)
     {
         if ($user->id === $request->user()->id) {

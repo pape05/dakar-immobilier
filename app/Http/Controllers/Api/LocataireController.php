@@ -10,8 +10,16 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
+/**
+ * Contrôleur CRUD des locataires.
+ *
+ * Accessible aux administrateurs et agents.
+ * Lors de la création, si un email est fourni, un compte utilisateur (rôle locataire)
+ * est automatiquement créé avec un mot de passe aléatoire.
+ */
 class LocataireController extends Controller
 {
+    /** Liste des locataires avec leurs locations. */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -25,6 +33,11 @@ class LocataireController extends Controller
         return response()->json($locataires);
     }
 
+    /**
+     * Création d'un locataire.
+     * Si un email est fourni, crée aussi un User avec must_change_password = true
+     * et retourne le mot de passe par défaut généré.
+     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -72,6 +85,7 @@ class LocataireController extends Controller
         return response()->json($locataire);
     }
 
+    /** Mise à jour — synchronise aussi le User associé (nom, email). */
     public function update(Request $request, Locataire $locataire)
     {
         $validated = $request->validate([
@@ -101,6 +115,7 @@ class LocataireController extends Controller
         return response()->json($locataire);
     }
 
+    /** Suppression du locataire et de son compte User associé. */
     public function destroy(Locataire $locataire)
     {
         DB::transaction(function () use ($locataire) {

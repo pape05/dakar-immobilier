@@ -6,10 +6,17 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Middleware de vérification des rôles.
+ *
+ * Utilisé dans les routes pour restreindre l'accès selon le rôle de l'utilisateur.
+ * Exemple : middleware('role:administrateur,agent') autorise ces deux rôles.
+ */
 class CheckRole
 {
     /**
-     * @param  Closure(Request): (Response)  $next
+     * Vérifie que l'utilisateur authentifié possède l'un des rôles autorisés.
+     * Retourne 401 si non authentifié, 403 si rôle non autorisé.
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {

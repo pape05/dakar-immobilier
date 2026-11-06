@@ -10,8 +10,15 @@ use App\Models\Paiement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+/**
+ * Contrôleur des rapports (administrateur uniquement).
+ *
+ * Fournit trois types de rapports : revenus mensuels, taux d'occupation
+ * par bâtiment et liste des loyers impayés. Export CSV disponible.
+ */
 class RapportController extends Controller
 {
+    /** Rapport des revenus sur N mois avec taux de recouvrement. */
     public function revenus(Request $request)
     {
         $mois = (int) $request->get('mois', 12);
@@ -50,6 +57,7 @@ class RapportController extends Controller
         ]);
     }
 
+    /** Taux d'occupation global et par bâtiment. */
     public function occupation()
     {
         $batiments = Batiment::withCount([
@@ -80,6 +88,7 @@ class RapportController extends Controller
         ]);
     }
 
+    /** Liste des locataires avec loyer impayé ce mois, triée par jours de retard. */
     public function impayes()
     {
         $now = Carbon::now();
@@ -123,6 +132,7 @@ class RapportController extends Controller
         ]);
     }
 
+    /** Export CSV des rapports (revenus, occupation ou impayés) avec BOM UTF-8. */
     public function exportCsv(Request $request)
     {
         $type = $request->get('type', 'revenus');

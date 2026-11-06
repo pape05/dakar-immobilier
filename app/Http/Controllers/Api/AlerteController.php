@@ -10,8 +10,20 @@ use App\Models\Paiement;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
+/**
+ * Contrôleur des alertes (administrateur et agent).
+ *
+ * Génère dynamiquement 4 types d'alertes :
+ * - Loyers impayés (avec calcul du retard en jours)
+ * - Contrats expirant dans les 30 prochains jours
+ * - Bâtiments avec taux d'occupation inférieur à 50%
+ * - Paiements reçus dans les dernières 48h
+ *
+ * Les alertes sont triées par priorité (haute > moyenne > basse > info).
+ */
 class AlerteController extends Controller
 {
+    /** Retourne la liste des alertes avec compteurs par priorité. */
     public function index(Request $request)
     {
         $user = $request->user();

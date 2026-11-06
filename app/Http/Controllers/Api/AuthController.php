@@ -9,8 +9,20 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+/**
+ * Contrôleur d'authentification.
+ *
+ * Gère l'inscription (réservée aux administrateurs), la connexion via Sanctum,
+ * la déconnexion, la récupération du profil et le changement de mot de passe.
+ */
 class AuthController extends Controller
 {
+    /**
+     * Inscription d'un nouvel utilisateur (admin ou agent).
+     * Seul un administrateur authentifié peut créer des comptes.
+     *
+     * @return \Illuminate\Http\JsonResponse 201 avec l'utilisateur créé
+     */
     public function register(Request $request)
     {
         $currentUser = $request->user();
@@ -40,6 +52,12 @@ class AuthController extends Controller
         ], 201);
     }
 
+    /**
+     * Connexion d'un utilisateur.
+     * Génère un token Sanctum (Bearer) en cas de succès.
+     *
+     * @return \Illuminate\Http\JsonResponse Token + données utilisateur
+     */
     public function login(Request $request)
     {
         $request->validate([
@@ -64,6 +82,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Déconnexion — révoque le token courant.
+     */
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
@@ -73,11 +94,18 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Retourne le profil de l'utilisateur authentifié avec son agence et locataire.
+     */
     public function user(Request $request)
     {
         return response()->json($request->user()->load('agence', 'locataire'));
     }
 
+    /**
+     * Changement de mot de passe.
+     * Réinitialise le flag must_change_password après la première connexion.
+     */
     public function changePassword(Request $request)
     {
         $request->validate([

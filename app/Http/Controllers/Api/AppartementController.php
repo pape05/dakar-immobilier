@@ -7,8 +7,15 @@ use App\Models\Appartement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * Contrôleur CRUD des appartements.
+ *
+ * Accessible aux administrateurs et agents.
+ * Un agent ne voit que les appartements des bâtiments de son agence.
+ */
 class AppartementController extends Controller
 {
+    /** Liste des appartements avec leur bâtiment et agence. */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -22,6 +29,7 @@ class AppartementController extends Controller
         return response()->json($appartements);
     }
 
+    /** Création d'un appartement avec upload photo optionnel (max 5 Mo). */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -82,6 +90,7 @@ class AppartementController extends Controller
         return response()->json($appartement);
     }
 
+    /** Suppression — refuse si l'appartement a une location active. */
     public function destroy(Request $request, Appartement $appartement)
     {
         $this->authorizeAgence($request, $appartement);

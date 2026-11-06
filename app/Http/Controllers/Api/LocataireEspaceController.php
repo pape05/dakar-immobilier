@@ -8,8 +8,15 @@ use App\Models\Paiement;
 use App\Services\QuittanceService;
 use Illuminate\Http\Request;
 
+/**
+ * Contrôleur de l'espace locataire.
+ *
+ * Fournit au locataire connecté ses données personnelles : contrat actif,
+ * historique des paiements, notifications et téléchargement de quittances PDF.
+ */
 class LocataireEspaceController extends Controller
 {
+    /** Données complètes de l'espace locataire (contrat, paiements, notifications). */
     public function index(Request $request)
     {
         $user = $request->user();
@@ -37,6 +44,7 @@ class LocataireEspaceController extends Controller
         ]);
     }
 
+    /** Téléchargement de la quittance PDF — vérifie que le paiement appartient au locataire. */
     public function quittance(Request $request, Paiement $paiement, QuittanceService $quittanceService)
     {
         $user = $request->user();
@@ -49,6 +57,7 @@ class LocataireEspaceController extends Controller
         return $quittanceService->genererQuittancePDF($paiement);
     }
 
+    /** Marque une notification comme lue (vérifie l'appartenance au locataire). */
     public function markNotificationRead(Request $request, Notification $notification)
     {
         $user = $request->user();
